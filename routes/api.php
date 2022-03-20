@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\LeaderboardsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getAll', [CharacterController::class, 'getAll']);
         Route::get('{character}/delete', [CharacterController::class, 'delete']);
     });
+    Route::get('/leaderboards', [LeaderboardsController::class, 'get']);
 });
