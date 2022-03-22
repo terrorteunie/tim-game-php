@@ -22,11 +22,15 @@ class CharacterController extends Controller
         $hp = 50 + $params['strength'] * 5;
         $character = new Character(
             [
-                ...$params,
+                'strength' => $params['strength'],
+                'dexterity' => $params['dexterity'],
+                'intelligence' => $params['intelligence'],
+                'luck' => $params['luck'],
+                'name' => $params['name'],
                 'hp' => $hp,
                 'gold' => 0,
                 'xp' => 0,
-                'level' => 0,
+                'level' => 1,
             ]
         );
         $user->characters()->save($character);
