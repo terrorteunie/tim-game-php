@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('rarity');
             $table->integer('reward_gold');
+            $table->integer('reward_xp');
             $table->integer('combat');
         });
     }

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('strength');
             $table->integer('luck');
             $table->integer('intelligence');
-            $table->integer('gold_reward');
+            $table->integer('reward_gold');
+            $table->integer('reward_xp');
         });
     }
 
