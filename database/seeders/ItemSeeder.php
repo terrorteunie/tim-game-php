@@ -23,7 +23,7 @@ class ItemSeeder extends Seeder
         ]);
 
         DB::table('stats')->insert([
-            'type' => 'Excalibur',
+            'type' => 'damage',
             'min' => 10,
             'max' => 20,
         ]);
