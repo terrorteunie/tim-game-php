@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    public const LEGENDARY = 'Legendary';
+    public const EPIC = 'Epic';
+    public const RARE = 'Rare';
+    public const UNCOMMON = 'Uncommon';
+    public const COMMON = 'Common';
+
     public $timestamps = false;
     /**
      * The attributes that are mass assignable.

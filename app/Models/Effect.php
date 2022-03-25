@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Effect extends Model
 {
+    public const TYPE_BUFF = 'Buff';
+
     public $timestamps = false;
     /**
      * The attributes that are mass assignable.
