@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
@@ -13,7 +14,12 @@ class Event extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        
+        'name',
+        'description',
+        'reward_gold',
+        'reward_xp',
+        'rarity',
+        'combat'
     ];
 
     public function effects()
@@ -30,4 +36,6 @@ class Event extends Model
     {
         return $this->belongsToMany(Enemy::class, 'events_enemies');
     }
+    
+
 }

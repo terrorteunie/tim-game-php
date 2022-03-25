@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'authenticate']);
+Route::post('/event-creator/submit', [EventController::class, 'createEvent']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/character')->group(function () {

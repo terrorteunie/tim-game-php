@@ -76,7 +76,7 @@ class EventSeeder extends Seeder
 
         DB::table('events')->insert([
             'name' => 'A suspicious looking rock',
-            'description' => 'You come across a weird looking rock. Upon further examination you find a few gold pieces. Meh, better than nothing atleast.',
+            'description' => 'You come across a weird looking rock. Upon further examination you find 5 gold pieces. Meh, better than nothing atleast.',
             'rarity' => 'Uncommon',
             'reward_gold' => 5,
             'reward_xp' => 2,
@@ -85,7 +85,7 @@ class EventSeeder extends Seeder
 
         DB::table('events')->insert([
             'name' => 'A suspicious looking rock',
-            'description' => 'You come across a weird looking rock. Upon further examination you find quite a few gold pieces!',
+            'description' => 'You come across a weird looking rock. Upon further examination you find 20 gold pieces!',
             'rarity' => 'Rare',
             'reward_gold' => 20,
             'reward_xp' => 3,
@@ -94,7 +94,7 @@ class EventSeeder extends Seeder
 
         DB::table('events')->insert([
             'name' => 'A suspicious looking rock',
-            'description' => 'You come across a weird looking rock. Upon further examination you find a lot of gold pieces! Your lucky day!',
+            'description' => 'You come across a weird looking rock. Upon further examination you find 100 gold pieces! Your lucky day!',
             'rarity' => 'Epic',
             'reward_gold' => 100,
             'reward_xp' => 3,
@@ -123,5 +123,7 @@ class EventSeeder extends Seeder
             'reward_xp' => 10,
             'combat' => 0,
         ]);
+
+        
     }
 }
