@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('enemies')->insert([
+            'name' => 'Mighty warrior',
             'hp' => 30,
             'dexterity' => 3,
             'strength' => 3,
