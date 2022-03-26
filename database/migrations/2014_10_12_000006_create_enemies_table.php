@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('enemies', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->integer('hp');
             $table->integer('dexterity');
             $table->integer('strength');
