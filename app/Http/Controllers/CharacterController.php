@@ -28,12 +28,23 @@ class CharacterController extends Controller
                 'luck' => $params['luck'],
                 'name' => $params['name'],
                 'hp' => $hp,
+                'max_hp' => $hp,
                 'gold' => 0,
                 'xp' => 0,
                 'level' => 1,
             ]
         );
         $user->characters()->save($character);
+        return $character;
+    }
+
+    public function get(Character $character)
+    {
+        // First check if character belongs to user
+        $user = Auth::user();
+        if ($character->user->id !== $user->id) {
+            return ['error' => 'this character does not belong to you'];
+        }
         return $character;
     }
 

@@ -23,6 +23,7 @@ class Character extends Model
     protected $fillable = [
         'name',
         'hp',
+        'max_hp',
         'gold',
         'xp',
         'level',

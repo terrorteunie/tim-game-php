@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/character')->group(function () {
         Route::post('/create', [CharacterController::class, 'create']);
         Route::get('/getAll', [CharacterController::class, 'getAll']);
+        Route::get('{character}/get', [CharacterController::class, 'get']);
         Route::get('{character}/delete', [CharacterController::class, 'delete']);
     });
     Route::get('/leaderboards', [LeaderboardsController::class, 'get']);
