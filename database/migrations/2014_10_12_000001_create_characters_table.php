@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('hp');
+            $table->integer('max_hp');
             $table->integer('gold');
             $table->integer('xp');
             $table->integer('level');
