@@ -123,7 +123,77 @@ class EventSeeder extends Seeder
             'reward_xp' => 10,
             'combat' => 0,
         ]);
-
         
+        DB::table('events')->insert([
+            'name' => 'Thanks dad...',
+            'description' => 'A random traveler gives you some unwarranted advice. You don\'t want or need it but whatever. You gain 1 experience point for listening.',
+            'rarity' => 'Common',
+            'reward_gold' => 0,
+            'reward_xp' => 1,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'A sip o\' water',
+            'description' => 'You hear a nearby river flowing. You go towards it and take a sip of water from the stream. You feel refreshed and gain 2 health points.',
+            'rarity' => 'Common',
+            'reward_gold' => 0,
+            'reward_xp' => 0,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'Knowledge is power',
+            'description' => 'You take a small break and read something from your book. Tales of Herman the Knight. You gain some XP from the knowledge gained.',
+            'rarity' => 'Common',
+            'reward_gold' => 0,
+            'reward_xp' => 3,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'Poor old beggar',
+            'description' => 'An old beggar approaches you and asks for a few gold pieces. You have no spine, so you give the fellow 10 gold.',
+            'rarity' => 'Common',
+            'reward_gold' => -10,
+            'reward_xp' => 0,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'One man\'s garbage is another man\'s treasure',
+            'description' => 'You come across some wandering merchants. You greet each other in a friendly manner and you are able to sell some useless junk you found along the road. You gain 50 gold!',
+            'rarity' => 'Uncommon',
+            'reward_gold' => 50,
+            'reward_xp' => 0,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'One man\'s garbage is still another man\'s garbage',
+            'description' => 'You come across some wandering merchants. You greet each other in a friendly manner but the found your stuff useless. You gain nothing.',
+            'rarity' => 'Uncommon',
+            'reward_gold' => 0,
+            'reward_xp' => 0,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'Did I hear something?',
+            'description' => 'While walking the road some figure quickly approaches you and snatches some gold from your satchel and runs off. You lose 20 gold!',
+            'rarity' => 'rare',
+            'reward_gold' => -20,
+            'reward_xp' => 0,
+            'combat' => 0,
+        ]);
+
+        DB::table('events')->insert([
+            'name' => 'Is that the one and only Lance Harold the Fifth?',
+            'description' => 'You stumbled across the famous knight Harold the Fifth. You speak briefly with him and gain 100 experience!',
+            'rarity' => 'rare',
+            'reward_gold' => 0,
+            'reward_xp' => 100,
+            'combat' => 0,
+        ]);
     }
 }
