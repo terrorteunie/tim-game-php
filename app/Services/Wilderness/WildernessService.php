@@ -2,9 +2,11 @@
 
 namespace App\Services\Wilderness;
 
+use App\Constants\StatMultipliers;
 use App\Models\Character;
 use App\Models\Event;
 use App\Models\Effect;
+use App\Models\EntityInterface;
 use App\Services\Helpers\RNGsus;
 
 class WildernessService
@@ -19,13 +21,22 @@ class WildernessService
         $eventLogs = [];
         foreach (range(0, $distance) as $eventNumber) {
             $event = $this->getEvent($character);
-            $this->processEvent($event, $character);
+            $combatLog = $this->processEvent($event, $character);
+            $description = $event->description;
+            if ($combatLog !== '') {
+                $description .= "\n" . $combatLog;
+            }
             $eventLogs[] = [
                 'rarity' => $event->rarity,
-                'description' => $event->description
+                'description' => $description
             ];
+            if ($character->isDead()) {
+                break;
+            }
         }
-        return $eventLogs;
+        $character->finishAdventure();
+        $character->save();
+        return ['logs' => $eventLogs, 'dead' => $character->isDead()];
     }
 
     private function getEvent(Character $character): Event
@@ -35,16 +46,28 @@ class WildernessService
         return RNGsus::gamble($possibleEvents);
     }
 
-    private function processEvent(Event $event, Character $character): void
+    private function processEvent(Event $event, Character $character): string
     {
-        $character->modifyGold($event->reward_gold);
-        $character->modifyXp($event->reward_xp);
-        
+        // Do the effects first
         foreach ($event->effects as $effect) {
             $this->processEffect($effect, $character);
         }
 
+        // Then the combat
+        $combatLog = '';
+        if ($event->combat) {
+            $combatLogs = $this->processCombat($event, $character);
+            $combatLog = implode("\n", $combatLogs);
+        }
+
+
+        // Lastly do the event stats itself
+        $character->modifyGold($event->reward_gold);
+        $character->modifyXp($event->reward_xp);
+
         $character->save();
+
+        return $combatLog;
     }
 
     private function processEffect(Effect $effect, Character $character): void
@@ -55,10 +78,83 @@ class WildernessService
                 $character->modifyDexterityMod($effect->dexterity_change);
                 $character->modifyIntelligenceMod($effect->intelligence_change);
                 $character->modifyLuckMod($effect->luck_change);
-                // TODO hp change
+                $character->modifyMaxHpMod($effect->hp_change);
             default:
                 // do nothing
         }
+    }
+
+    private function processCombat(Event $event, Character $character): array
+    {
+        $enemies = $event->enemies;
+        $characterAndEnemies = [...$enemies, $character];
+        usort($characterAndEnemies, function ($entityA, $entityB) {
+            return $entityA->getInitiative() <=> $entityB->getInitiative();
+        });
+        $combatLogs = [];
+        while (true) {
+            foreach ($characterAndEnemies as $entity) {
+                // The character's turn
+                if ($entity->getType() === 'character') {
+                    $enemiesDead = true;
+                    foreach ($enemies as $enemy) {
+                        // Attack first enemy that is alive
+                        if (!$enemy->isDead()) {
+                            $combatLogs[] = $this->hit($entity, $enemy);
+                        }
+                        // Check if enemy hp is still alive
+                        if (!$enemy->isDead()) {
+                            $enemiesDead = false;
+                        }
+                    }
+                    // All enemies are dead, stop the combat
+                    if ($enemiesDead) {
+                        break 2;
+                    }
+                }
+                // Enemy's turn
+                if ($entity->getType() === 'enemy') {
+                    $combatLogs[] = $this->hit($entity, $character);
+                    // Character is dead, stop the combat
+                    if ($character->isDead()) {
+                        break 2;
+                    }
+                }
+            }
+        }
+        return $combatLogs;
+    }
+
+    /**
+     * $entityA will attempt to hit $entityB
+     */
+    private function hit(EntityInterface $entityA, EntityInterface $entityB): string
+    {
+        // Check if there is a hit
+        $hit = RNGsus::pray($entityA->getHitChance());
+        if (!$hit) {
+            return $entityA->name . " misses the attack.";
+        }
+        // If there is a hit, then check if the other person dodges
+        $dodge = RNGsus::pray($entityB->getDodgeChance());
+        if ($dodge) {
+            return $entityA->name . " hits, but " . $entityB->name . " dodges the attack.";
+        }
+        // There is a hit and no dodge, calculate damage
+        $damage = $entityA->getBaseDamage();
+        $critRoll = RNGsus::pray($entityA->getCritChance());
+        if ($critRoll) {
+            $damage *= StatMultipliers::CRIT_DAMAGE;
+        }
+
+        $entityB->reduceHp($damage);
+
+        $log = $entityA->name . " hits " . $entityB->name . " for $damage damage.";
+
+        if ($entityB->isDead()) {
+            $log .= "\n" . $entityB->name . " is dead.";
+        }
+        return $log;
     }
 
     private function getRarity(Character $character): string

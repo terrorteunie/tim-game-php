@@ -25,7 +25,8 @@ return new class extends Migration
             $table->integer('strength');
             $table->integer('luck');
             $table->integer('intelligence');
-            $table->integer('user_id');            
+            $table->boolean('dead');
+            $table->integer('user_id');
         });
     }
 

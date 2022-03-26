@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\BaseStatValues;
+use App\Constants\StatMultipliers;
 use App\Models\Character;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -19,7 +21,7 @@ class CharacterController extends Controller
             'luck' => 'required|int',
         ]);
         $user = Auth::user();
-        $hp = 50 + $params['strength'] * 5;
+        $hp = BaseStatValues::HP + $params['strength'] * StatMultipliers::STRENGTH_HP;
         $character = new Character(
             [
                 'strength' => $params['strength'],
@@ -29,6 +31,7 @@ class CharacterController extends Controller
                 'name' => $params['name'],
                 'hp' => $hp,
                 'max_hp' => $hp,
+                'dead' => false,
                 'gold' => 0,
                 'xp' => 0,
                 'level' => 1,
