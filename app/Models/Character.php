@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Constants\BaseStatValues;
 use App\Constants\StatMultipliers;
+use App\Services\Helpers\XpCalculator;
 use Illuminate\Database\Eloquent\Model;
 
 class Character extends Model implements EntityInterface
@@ -18,6 +19,10 @@ class Character extends Model implements EntityInterface
     private $intelligenceMod = 0;
     private $luckMod = 0;
     private $maxHpMod = 0;
+
+    protected $appends = [
+        'attribute_points_left'
+    ];
 
     public $timestamps = false;
     /**
@@ -116,7 +121,11 @@ class Character extends Model implements EntityInterface
             $xp = 0;
         }
         $this->xp += $xp;
-        // TODO level up check code
+
+        while ($this->xp >= $xpNeeded = XpCalculator::xpNeededForLevel($this->level + 1)) {
+            $this->xp -= $xpNeeded;
+            $this->level++;
+        }
     }
 
     public function finishAdventure(): void
@@ -124,5 +133,11 @@ class Character extends Model implements EntityInterface
         if ($this->hp > $this->max_hp) {
             $this->hp = $this->max_hp;
         }
+    }
+
+    public function getAttributePointsLeftAttribute()
+    {
+        $attributePoints = $this->strength + $this->dexterity + $this->intelligence + $this->luck;
+        return (BaseStatValues::ATTRIBUTE_POINTS + ($this->level * StatMultipliers::ATTRIBUTE_POINTS_PER_LEVEL)) - $attributePoints;
     }
 }

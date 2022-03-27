@@ -67,4 +67,38 @@ class CharacterController extends Controller
         $character->delete();
         return ['succes' => true];
     }
+
+    public function saveStats(Character $character, Request $request)
+    {
+        // First check if character belongs to user
+        $user = Auth::user();
+        if ($character->user->id !== $user->id) {
+            return ['error' => 'this character does not belong to you'];
+        }
+        $params = $request->validate([
+            'strength' => 'int|required',
+            'dexterity' => 'int|required',
+            'intelligence' => 'int|required',
+            'luck' => 'int|required',
+        ]);
+
+        if ($params['strength'] < $character->strength) {
+            return ['error' => 'you cannot decrease your attributes'];
+        }
+        if ($params['dexterity'] < $character->dexterity) {
+            return ['error' => 'you cannot decrease your attributes'];
+        }
+        if ($params['intelligence'] < $character->intelligence) {
+            return ['error' => 'you cannot decrease your attributes'];
+        }
+        if ($params['luck'] < $character->luck) {
+            return ['error' => 'you cannot decrease your attributes'];
+        }
+        $character->strength = $params['strength'];
+        $character->dexterity = $params['dexterity'];
+        $character->intelligence = $params['intelligence'];
+        $character->luck = $params['luck'];
+        $character->save();
+        return $character;
+    }
 }

@@ -27,9 +27,7 @@ class WildernessController extends Controller
         $params = $request->validate([
             'distance' => 'required|int',
         ]);
-
-        
-
-        return $this->wildernessService->createAdventure($params['distance'], $character);
+        $eventLogs = $this->wildernessService->createAdventure($params['distance'], $character);
+        return ['logs' => $eventLogs, 'character' => $character];
     }
 }

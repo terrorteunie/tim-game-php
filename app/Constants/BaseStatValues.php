@@ -10,4 +10,5 @@ class BaseStatValues
     public const HIT_CHANCE = 35;
     public const DODGE_CHANCE = 20;
     public const DAMAGE = 1;
+    public const ATTRIBUTE_POINTS = 13;
 }

@@ -36,7 +36,7 @@ class WildernessService
         }
         $character->finishAdventure();
         $character->save();
-        return ['logs' => $eventLogs, 'dead' => $character->isDead()];
+        return $eventLogs;
     }
 
     private function getEvent(Character $character): Event
@@ -86,13 +86,16 @@ class WildernessService
 
     private function processCombat(Event $event, Character $character): array
     {
+        // Sort enemies and the character in a list by their initiative
         $enemies = $event->enemies;
         $characterAndEnemies = [...$enemies, $character];
         usort($characterAndEnemies, function ($entityA, $entityB) {
             return $entityA->getInitiative() <=> $entityB->getInitiative();
         });
+
         $combatLogs = [];
-        while (true) {
+        $combatIsfinished = false;
+        while (!$combatIsfinished) {
             foreach ($characterAndEnemies as $entity) {
                 // The character's turn
                 if ($entity->getType() === 'character') {
@@ -101,15 +104,20 @@ class WildernessService
                         // Attack first enemy that is alive
                         if (!$enemy->isDead()) {
                             $combatLogs[] = $this->hit($entity, $enemy);
-                        }
-                        // Check if enemy hp is still alive
-                        if (!$enemy->isDead()) {
-                            $enemiesDead = false;
+                            // If the hit killed the enemey, reward its rewards
+                            if ($enemy->isDead()) {
+                                $character->modifyGold($enemy->reward_gold);
+                                $character->modifyXp($enemy->reward_xp);
+                            } else {
+                                // Else make sure that we know there are still enemies alive
+                                $enemiesDead = false;
+                            }
                         }
                     }
                     // All enemies are dead, stop the combat
                     if ($enemiesDead) {
-                        break 2;
+                        $combatIsfinished = true;
+                        break;
                     }
                 }
                 // Enemy's turn
@@ -117,7 +125,8 @@ class WildernessService
                     $combatLogs[] = $this->hit($entity, $character);
                     // Character is dead, stop the combat
                     if ($character->isDead()) {
-                        break 2;
+                        $combatIsfinished = true;
+                        break;
                     }
                 }
             }
@@ -147,6 +156,7 @@ class WildernessService
             $damage *= StatMultipliers::CRIT_DAMAGE;
         }
 
+        // Deal the damage
         $entityB->reduceHp($damage);
 
         $log = $entityA->name . " hits " . $entityB->name . " for $damage damage.";

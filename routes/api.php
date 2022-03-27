@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getAll', [CharacterController::class, 'getAll']);
         Route::get('{character}/get', [CharacterController::class, 'get']);
         Route::get('{character}/delete', [CharacterController::class, 'delete']);
+        Route::post('{character}/saveStats', [CharacterController::class, 'saveStats']);
     });
     Route::get('/leaderboards', [LeaderboardsController::class, 'get']);
     Route::get('/wilderness/{character}/createAdventure', [WildernessController::class, 'createAdventure']);
