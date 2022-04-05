@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BattleSimulatorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 
@@ -21,5 +22,8 @@ Route::get('/', function () {
 Route::get('/event-creator', function () {
     return view('event-creator');
 });
+
+Route::get('/battle-simulator', [BattleSimulatorController::class, 'getView']);
+Route::post('/battle-simulator/submit', [BattleSimulatorController::class, 'simulate']);
 
 Route::post('/event-creator/submit', [EventController::class, 'createEvent']);

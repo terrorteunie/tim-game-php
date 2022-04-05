@@ -26,6 +26,7 @@ class EventController extends Controller
                 'combat' => '0',
             ]
         );
+        $event->effects()->attach
         //die(dd($event));
         $event->save();
         return view('event-creator');

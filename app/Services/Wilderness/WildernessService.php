@@ -16,7 +16,7 @@ class WildernessService
     private const RARE_CHANCE = 14;
     private const UNCOMMON_CHANCE = 30;
 
-    public function createAdventure(int $distance, Character $character)
+    public function createAdventure(int $distance, Character $character): array
     {
         $eventLogs = [];
         foreach (range(0, $distance) as $eventNumber) {
@@ -56,7 +56,7 @@ class WildernessService
         // Then the combat
         $combatLog = '';
         if ($event->combat) {
-            $combatLogs = $this->processCombat($event, $character);
+            $combatLogs = $this->processCombat($event->enemies, $character);
             $combatLog = implode("\n", $combatLogs);
         }
 
@@ -84,17 +84,15 @@ class WildernessService
         }
     }
 
-    private function processCombat(Event $event, Character $character): array
+    public function processCombat(array $enemies, Character $character): array
     {
         // Sort enemies and the character in a list by their initiative
-        $enemies = $event->enemies;
         $characterAndEnemies = [...$enemies, $character];
         usort($characterAndEnemies, function ($entityA, $entityB) {
             return $entityA->getInitiative() <=> $entityB->getInitiative();
         });
 
-        $inventories = $character->load('inventories.item.stats');
-        foreach ($inventories as $inventory) {
+        foreach ($character->inventories as $inventory) {
             $item = $inventory->item;
             $stats = $item->stats;
         }

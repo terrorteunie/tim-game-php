@@ -28,7 +28,16 @@ class Enemy extends Model implements EntityInterface
      * @var array<int, string>
      */
     protected $fillable = [
-        
+        'name',
+        'hp',
+        'max_hp',
+        'level',
+        'dexterity',
+        'strength',
+        'luck',
+        'intelligence',
+        'reward_gold',
+        'reward_xp'
     ];
 
     public function events()

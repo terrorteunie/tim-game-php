@@ -14,7 +14,7 @@ class Inventory extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        
+        'equipped'
     ];
 
     public function character()
