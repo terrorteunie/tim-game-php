@@ -20,4 +20,14 @@ class Item extends Model
     {
         return $this->belongsToMany(Event::class, 'events_items');
     }
+    
+    public function stats()
+    {
+        return $this->belongsToMany(Stat::class, 'items_stats');
+    }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

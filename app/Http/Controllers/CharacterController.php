@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\BaseStatValues;
 use App\Constants\StatMultipliers;
+use App\Constants\TownConstants;
 use App\Models\Character;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -100,5 +101,53 @@ class CharacterController extends Controller
         $character->luck = $params['luck'];
         $character->save();
         return $character;
+    }
+
+    public function healFromInn(Character $character)
+    {
+        // First check if character belongs to user
+        $user = Auth::user();
+        if ($character->user->id !== $user->id) {
+            return ['error' => 'this character does not belong to you'];
+        }
+        if ($character->gold > TownConstants::HEAL_FROM_INN_COST) {
+            $character->modifyGold(-1 * TownConstants::HEAL_FROM_INN_COST);
+            $character->healHp(TownConstants::HEAL_FROM_INN_HP);
+            $character->save();
+        }
+        return $character;
+    }
+
+    public function getInventory(Character $character)
+    {
+        // First check if character belongs to user
+        $user = Auth::user();
+        if ($character->user->id !== $user->id) {
+            return ['error' => 'this character does not belong to you'];
+        }
+        return $character->load('inventories.item');
+    }
+
+    public function toggleEquips(Character $character, Request $request)
+    {
+        // First check if character belongs to user
+        $user = Auth::user();
+        if ($character->user->id !== $user->id) {
+            return ['error' => 'this character does not belong to you'];
+        }
+        $params = $request->validate([
+            'equipToggles' => 'required|array'
+        ]);
+        $inventories = $character->inventories;
+        foreach ($params['equipToggles'] as $equipToggle) {
+            foreach ($inventories as $inventory) {
+                if ($inventory->id === $equipToggle) {
+                    $inventory->equipped = !$inventory->equipped;
+                    $inventory->save();
+                    break;
+                }
+            }
+        }
+        return $character->load('inventories.item');
     }
 }

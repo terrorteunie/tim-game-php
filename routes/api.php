@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getAll', [CharacterController::class, 'getAll']);
         Route::get('{character}/get', [CharacterController::class, 'get']);
         Route::get('{character}/delete', [CharacterController::class, 'delete']);
+        Route::get('{character}/healFromInn', [CharacterController::class, 'healFromInn']);
+        Route::get('{character}/inventory', [CharacterController::class, 'getInventory']);
+        Route::post('{character}/toggleEquips', [CharacterController::class, 'toggleEquips']);
         Route::post('{character}/saveStats', [CharacterController::class, 'saveStats']);
     });
     Route::get('/leaderboards', [LeaderboardsController::class, 'get']);

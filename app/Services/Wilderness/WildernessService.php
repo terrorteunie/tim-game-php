@@ -93,6 +93,12 @@ class WildernessService
             return $entityA->getInitiative() <=> $entityB->getInitiative();
         });
 
+        $inventories = $character->load('inventories.item.stats');
+        foreach ($inventories as $inventory) {
+            $item = $inventory->item;
+            $stats = $item->stats;
+        }
+
         $combatLogs = [];
         $combatIsfinished = false;
         while (!$combatIsfinished) {

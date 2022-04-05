@@ -50,6 +50,11 @@ class Character extends Model implements EntityInterface
         return $this->belongsTo(User::class);
     }
 
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
     public function modifyStrengthMod(int $change): void
     {
         $this->strengthMod += $change;
@@ -99,6 +104,14 @@ class Character extends Model implements EntityInterface
         if ($this->hp < 0) {
             $this->hp = 0;
             $this->dead = true;
+        }
+    }
+
+    public function healHp(int $hp): void
+    {
+        $this->hp += $hp;
+        if ($this->hp > $this->max_hp + $this->maxHpMod) {
+            $this->hp = $this->max_hp + $this->maxHpMod;
         }
     }
 
