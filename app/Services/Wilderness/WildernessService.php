@@ -21,7 +21,7 @@ class WildernessService
     public function createAdventure(int $distance, Character $character): array
     {
         $eventLogs = [];
-        foreach (range(0, $distance) as $eventNumber) {
+        foreach (range(1, $distance) as $eventNumber) {
             $event = $this->getEvent($character);
             $combatLog = $this->processEvent($event, $character);
             $description = $event->description;
@@ -86,7 +86,7 @@ class WildernessService
         }
     }
 
-    public function processCombat(array $enemies, Character $character): array
+    public function processCombat($enemies, Character $character): array
     {
         // Sort enemies and the character in a list by their initiative
         $characterAndEnemies = [...$enemies, $character];
