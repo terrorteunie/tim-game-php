@@ -9,7 +9,7 @@ class RNGsus
     /**
      * Use this when you want to check if a certain chance is a success
      */
-    public static function pray(float $succesChance)
+    public static function pray(float $succesChance): bool
     {
         // needs to be converted to int for the random function
         // allow for 2 decimals after the comma for percentages
@@ -27,5 +27,15 @@ class RNGsus
         $maxRoll = count($possibilities) - 1;
         $roll = rand(0, $maxRoll);
         return $possibilities[$roll];
+    }
+
+    /**
+     * Use this function to get a random number between a min and max int.
+     * This is used for example when calculating damage from min and max damage
+     * stats.
+     */
+    public static function tempt(int $min, int $max): int
+    {
+        return rand($min, $max);
     }
 }

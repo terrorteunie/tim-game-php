@@ -19,6 +19,9 @@ class Character extends Model implements EntityInterface
     private $intelligenceMod = 0;
     private $luckMod = 0;
     private $maxHpMod = 0;
+    private $armor = 0;
+    private $itemDamageMin = 0;
+    private $itemDamageMax = 0;
 
     protected $appends = [
         'attribute_points_left'
@@ -73,6 +76,36 @@ class Character extends Model implements EntityInterface
     public function modifyLuckMod(int $change): void
     {
         $this->luckMod += $change;
+    }
+
+    public function modifyArmor(int $change): void
+    {
+        $this->armor += $change;
+    }
+
+    public function modifyItemDamageMin(int $change): void
+    {
+        $this->itemDamageMin += $change;
+    }
+
+    public function modifyItemDamageMax(int $change): void
+    {
+        $this->itemDamageMax += $change;
+    }
+
+    public function getItemDamageMin(): int
+    {
+        return $this->itemDamageMin;
+    }
+
+    public function getItemDamageMax(): int
+    {
+        return $this->itemDamageMax;
+    }
+
+    public function getArmor(): int
+    {
+        return $this->armor;
     }
 
     public function modifyMaxHpMod(int $change): void

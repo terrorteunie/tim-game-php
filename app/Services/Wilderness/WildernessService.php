@@ -7,7 +7,9 @@ use App\Models\Character;
 use App\Models\Event;
 use App\Models\Effect;
 use App\Models\EntityInterface;
+use App\Models\Stat;
 use App\Services\Helpers\RNGsus;
+use Exception;
 
 class WildernessService
 {
@@ -95,6 +97,9 @@ class WildernessService
         foreach ($character->inventories as $inventory) {
             $item = $inventory->item;
             $stats = $item->stats;
+            foreach ($stats as $stat) {
+                $this->processStat($stat, $character);
+            }
         }
 
         $combatLogs = [];
@@ -138,6 +143,36 @@ class WildernessService
         return $combatLogs;
     }
 
+    private function processStat(Stat $stat, Character $character): void
+    {
+        switch ($stat->type) {
+            case Stat::DAMAGE:
+                $character->modifyItemDamageMin($stat->min);
+                $character->modifyItemDamageMax($stat->max);
+                break;
+            case Stat::HP:
+                $character->modifyMaxHpMod($stat->min);
+                break;
+            case Stat::ARMOR:
+                $character->modifyArmor($stat->min);
+                break;
+            case Stat::STRENGTH:
+                $character->modifyStrengthMod($stat->min);
+                break;
+            case Stat::DEXTERITY:
+                $character->modifyDexterityMod($stat->min);
+                break;
+            case Stat::INTELLIGENCE:
+                $character->modifyIntelligenceMod($stat->min);
+                break;
+            case Stat::LUCK:
+                $character->modifyLuckMod($stat->min);
+                break;
+            default:
+                throw new Exception('Stat with type ' . $stat->type . ' not recognized.');
+        }
+    }
+
     /**
      * $entityA will attempt to hit $entityB
      */
@@ -154,10 +189,23 @@ class WildernessService
             return $entityA->name . " hits, but " . $entityB->name . " dodges the attack.";
         }
         // There is a hit and no dodge, calculate damage
+        // Base damage from strength
         $damage = $entityA->getBaseDamage();
+        // Damage from items, only for characters
+        if ($entityA instanceof Character) {
+            $damage += RNGsus::tempt($entityA->getItemDamageMin(), $entityA->getItemDamageMax());
+        }
+        // Damage from crit
         $critRoll = RNGsus::pray($entityA->getCritChance());
         if ($critRoll) {
             $damage *= StatMultipliers::CRIT_DAMAGE;
+        }
+        // If the damage receiving entity is the character, decude damage by armour
+        if ($entityB instanceof Character) {
+            $damage -= $entityB->getArmor() * StatMultipliers::ARMOR_EFFECTIVE;
+            if ($damage < 0) {
+                $damage = 0;
+            }
         }
 
         // Deal the damage
